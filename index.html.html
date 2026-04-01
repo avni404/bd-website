@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>20th Birthday</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&family=Syne:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%; overflow: hidden;
+      font-family: 'Syne', sans-serif;
+      background: #111;
+    }
+
+    /* ═══ LANDING ═══ */
+    #landing {
+      position: fixed; inset: 0; z-index: 10;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 1.4rem;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .mag-card {
+      width: min(340px, 52vh);
+      aspect-ratio: 1 / 1.414;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 28px 70px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.18);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    .mag-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 40px 90px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.25);
+    }
+    .mag-card img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+
+    .ripple {
+      position: absolute; border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      transform: scale(0); animation: ripple-anim 0.55s linear;
+      pointer-events: none;
+    }
+    @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+
+    .btn-row {
+      display: flex; gap: 0.85rem;
+      width: min(340px, 52vh);
+    }
+
+    .btn-hint {
+      flex: 1; padding: 0.85rem 0.75rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.82rem; font-style: italic;
+      color: #0d0d0d;
+      background: rgba(200,192,178,0.92);
+      border: 1px solid rgba(0,0,0,0.18);
+      border-radius: 4px;
+      backdrop-filter: blur(6px);
+      text-align: center; line-height: 1.4;
+      pointer-events: none; user-select: none;
+      font-weight: 600;
+    }
+
+    .btn-explore {
+      flex: 1; padding: 0.85rem 1rem;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.13em; text-transform: uppercase;
+      color: #fff; background: #5a7a62;
+      border: none; border-radius: 4px;
+      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      box-shadow: 0 4px 16px rgba(90,122,98,0.35);
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-explore:hover { background: #3e5945; transform: translateY(-2px); }
+    .btn-explore svg { transition: transform 0.2s; }
+    .btn-explore:hover svg { transform: translateX(3px); }
+
+    /* ═══ MAGAZINE OVERLAY ═══ */
+    #magazine {
+      position: fixed; inset: 0; z-index: 20;
+      display: none;
+      flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 1rem;
+      background: rgba(10,10,10,0.96);
+    }
+    #magazine.open { display: flex; }
+
+    .close-btn {
+      position: absolute; top: 1rem; right: 1.2rem;
+      background: none; border: none;
+      color: rgba(255,255,255,0.45);
+      font-size: 1.5rem; cursor: pointer; line-height: 1;
+      transition: color 0.2s, transform 0.2s; z-index: 30;
+    }
+    .close-btn:hover { color: #fff; transform: rotate(90deg); }
+
+    /* Book */
+    .book-wrap {
+      width: min(680px, 92vw);
+      height: min(960px, 72vh);
+      position: relative;
+      border-radius: 3px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+    }
+
+    .page-pair {
+      position: absolute; inset: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      display: none;
+    }
+    .page-pair.active { display: grid; }
+
+    /* Spine */
+    .page-pair::after {
+      content: '';
+      position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 4px; height: 100%;
+      background: linear-gradient(to right, rgba(0,0,0,0.2), rgba(0,0,0,0.06), rgba(0,0,0,0.2));
+      z-index: 3; pointer-events: none;
+    }
+
+    .page-half {
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      background: #f5f0e8;
+    }
+    .page-half img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+    .page-half.left::after {
+      content: ''; position: absolute; top: 0; right: 0;
+      width: 20px; height: 100%;
+      background: linear-gradient(to right, transparent, rgba(0,0,0,0.09));
+      pointer-events: none; z-index: 2;
+    }
+    .page-half.right::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 20px; height: 100%;
+      background: linear-gradient(to left, transparent, rgba(0,0,0,0.09));
+      pointer-events: none; z-index: 2;
+    }
+
+    .pg-num {
+      position: absolute; bottom: 0.8rem;
+      font-size: 0.55rem; letter-spacing: 0.2em;
+      color: rgba(0,0,0,0.2); text-transform: uppercase;
+      z-index: 4; pointer-events: none;
+    }
+    .pg-num.l { left: 1.2rem; }
+    .pg-num.r { right: 1.2rem; }
+
+    /* ── Arrow nav row ── */
+    .arrow-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+    }
+
+    .arrow-btn {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.75);
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, border-color 0.2s, transform 0.18s;
+      flex-shrink: 0;
+    }
+    .arrow-btn:hover {
+      background: rgba(0,0,0,0.8);
+      border-color: #fff;
+      transform: scale(1.1);
+    }
+    .arrow-btn:disabled {
+      opacity: 0.22; cursor: default; transform: none;
+      pointer-events: none;
+    }
+    .arrow-btn svg { display: block; }
+
+    .spread-info {
+      font-size: 0.7rem; letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #fff;
+      font-weight: 700;
+      min-width: 80px; text-align: center;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════ LANDING ═══════════ -->
+<div id="landing">
+  <div class="mag-card" id="coverCard">
+    <img id="coverImg" alt="Vogue Cover"/>
+  </div>
+
+  <!-- Arrow row ABOVE the two buttons -->
+  <div class="arrow-row" id="landingArrows" style="display:none;">
+    <button class="arrow-btn" id="prevBtn" disabled>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <span class="spread-info" id="spreadInfo">1 / 5</span>
+    <button class="arrow-btn" id="nextBtn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="btn-row">
+    <div class="btn-hint">Click on the magazine to read it.</div>
+    <a class="btn-explore" href="next.html">
+      Click here for the next suprise.
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+        <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+</div>
+
+<!-- ═══════════ MAGAZINE ═══════════ -->
+<div id="magazine">
+  <button class="close-btn" onclick="closeMagazine()">&#x2715;</button>
+
+  <div class="book-wrap">
+
+    <!-- SPREAD 1 — pages 1 & 2 -->
+    <div class="page-pair active" id="pair-0">
+      <div class="page-half left">
+        <!-- PAGE 1: add <img src="your-image.jpg"> here -->
+        <img src="C:\Users\avni1\OneDrive\Documents\LIZ\1ST.png"
+        <span class="pg-num l">1</span>
+      </div>
+      <div class="page-half right">
+        <!-- PAGE 2: add <img src="your-image.jpg"> here -->
+        <img src="C:\Users\avni1\OneDrive\Documents\LIZ\b.png">
+        <span class="pg-num r">2</span>
+      </div>
+    </div>
+
+    <!-- SPREAD 2 — pages 3 & 4 -->
+    <div class="page-pair" id="pair-1">
+      <div class="page-half left">
+        <img src="C:\Users\avni1\OneDrive\Documents\LIZ\3RD.png">
+        <!-- PAGE 3 -->
+        <span class="pg-num l">3</span>
+      </div>
+      <div class="page-half right">
+        <!-- PAGE 4 -->
+         <img src="C:\Users\avni1\OneDrive\Documents\LIZ\a.png">
+        <span class="pg-num r">4</span>
+      </div>
+    </div>
+
+    <!-- SPREAD 3 — pages 5 & 6 -->
+    <div class="page-pair" id="pair-2">
+      <div class="page-half left">
+        <!-- PAGE 5 -->
+         <img src="C:\Users\avni1\OneDrive\Documents\LIZ\2ND.png">
+        <span class="pg-num l">5</span>
+      </div>
+      <div class="page-half right">
+        <!-- PAGE 6 -->
+        <span class="pg-num r">6</span>
+      </div>
+    </div>
+
+    <!-- SPREAD 4 — pages 7 & 8 -->
+    <div class="page-pair" id="pair-3">
+      <div class="page-half left">
+        <!-- PAGE 7 -->
+         <img src="C:\Users\avni1\OneDrive\Documents\LIZ\4TH.png">
+        <span class="pg-num l">7</span>
+      </div>
+      <div class="page-half right">
+        <!-- PAGE 8 -->
+        <span class="pg-num r">8</span>
+      </div>
+    </div>
+
+    <!-- SPREAD 5 — pages 9 & 10 -->
+    <div class="page-pair" id="pair-4">
+      <div class="page-half left">
+        <!-- PAGE 9 -->
+        <span class="pg-num l">9</span>
+      </div>
+      <div class="page-half right">
+        <!-- PAGE 10 -->
+        <span class="pg-num r">10</span>
+      </div>
+    </div>
+
+  </div><!-- /book-wrap -->
+
+  <!-- Arrow nav inside magazine too -->
+  <div class="arrow-row">
+    <button class="arrow-btn" id="magPrevBtn" disabled onclick="turnPage(-1)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <span class="spread-info" id="magSpreadInfo">1 / 5</span>
+    <button class="arrow-btn" id="magNextBtn" onclick="turnPage(1)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+</div><!-- /magazine -->
+
+<script>
+  // Inject images
+  document.getElementById('landing').style.backgroundImage = 'b.png'
+  document.getElementById('coverImg').src = 'cover.png';
+
+  let current = 0;
+  const total = 5;
+  let busy = false;
+
+  // Open magazine on cover click
+  document.getElementById('coverCard').addEventListener('click', function(e) {
+    // Ripple
+    const rect = this.getBoundingClientRect();
+    const r = document.createElement('div');
+    r.className = 'ripple';
+    const s = Math.max(rect.width, rect.height);
+    r.style.cssText = 'width:' + s + 'px;height:' + s + 'px;left:' + (e.clientX - rect.left - s/2) + 'px;top:' + (e.clientY - rect.top - s/2) + 'px';
+    this.appendChild(r);
+    setTimeout(function(){ r.remove(); }, 600);
+
+    document.getElementById('magazine').classList.add('open');
+    current = 0;
+    showPair(0);
+    updateNav();
+  });
+
+  function closeMagazine() {
+    document.getElementById('magazine').classList.remove('open');
+  }
+
+  function showPair(idx) {
+    document.querySelectorAll('.page-pair').forEach(function(p, i) {
+      p.classList.toggle('active', i === idx);
+    });
+  }
+
+  function turnPage(dir) {
+    if (busy) return;
+    var next = current + dir;
+    if (next < 0 || next >= total) return;
+    busy = true;
+    current = next;
+    showPair(current);
+    updateNav();
+    setTimeout(function(){ busy = false; }, 300);
+  }
+
+  function updateNav() {
+    document.getElementById('magPrevBtn').disabled = current === 0;
+    document.getElementById('magNextBtn').disabled = current === total - 1;
+    document.getElementById('magSpreadInfo').textContent = (current + 1) + ' / ' + total;
+  }
+</script>
+</body>
+</html>
