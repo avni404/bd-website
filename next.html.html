@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Next Surprise</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Syne', sans-serif;
+      overflow: hidden;
+    }
+
+    /* ═══ LANDING ═══ */
+    #landing {
+      height: 100vh;
+      background: linear-gradient(160deg,
+        #000308 0%, #020d22 12%, #051840 25%, #08244e 38%,
+        #0d3570 52%, #124a90 64%, #1a62a8 76%,
+        #2878b8 87%, #4090c8 95%, #6ab0d8 100%
+      );
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      padding: 2rem 1rem;
+      position: relative;
+    }
+    #landing::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(0,20,80,0.45) 0%, transparent 70%),
+        radial-gradient(ellipse at 80% 100%, rgba(0,60,140,0.3) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .header {
+      text-align: center;
+      position: relative;
+      animation: rise 0.9s ease both;
+    }
+    .header .eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(160,200,240,0.7);
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+    .header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      font-weight: 300;
+      color: #fff;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    }
+    .header h1 em { font-style: italic; color: #7ec8f0; }
+
+    .ovals {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      width: 100%;
+      max-width: 420px;
+      animation: rise 0.9s 0.15s ease both;
+      position: relative;
+    }
+
+    .oval-btn {
+      width: 100%;
+      padding: 1.4rem 2.5rem;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .oval-btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      opacity: 0;
+      transition: opacity 0.25s;
+      background: rgba(255,255,255,0.12);
+      border-radius: inherit;
+    }
+    .oval-btn:hover::before { opacity: 1; }
+    .oval-btn:hover { transform: translateY(-3px) scale(1.015); }
+    .oval-btn:active { transform: scale(0.98); }
+
+    .oval-1 {
+      background: linear-gradient(110deg, #010610, #061838);
+      box-shadow: 0 8px 32px rgba(4,18,56,0.7), 0 0 0 1px rgba(255,255,255,0.08);
+      color: #a0d0f0;
+    }
+    .oval-1:hover { box-shadow: 0 14px 40px rgba(4,18,56,0.85), 0 0 0 1px rgba(255,255,255,0.15); }
+
+    .oval-2 {
+      background: linear-gradient(110deg, #062050, #0d3a80);
+      box-shadow: 0 8px 32px rgba(8,32,80,0.65), 0 0 0 1px rgba(255,255,255,0.08);
+      color: #b8dcf8;
+    }
+    .oval-2:hover { box-shadow: 0 14px 40px rgba(8,32,80,0.8), 0 0 0 1px rgba(255,255,255,0.15); }
+
+    .oval-3 {
+      background: linear-gradient(110deg, #0a4a78, #1272a8);
+      box-shadow: 0 8px 32px rgba(10,60,100,0.6), 0 0 0 1px rgba(255,255,255,0.08);
+      color: #c8eaff;
+    }
+    .oval-3:hover { box-shadow: 0 14px 40px rgba(10,60,100,0.75), 0 0 0 1px rgba(255,255,255,0.15); }
+
+    .oval-text { flex: 1; }
+    .oval-label {
+      display: block;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      opacity: 0.65;
+      margin-bottom: 0.25rem;
+    }
+    .oval-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.1rem, 3vw, 1.45rem);
+      font-weight: 400;
+      line-height: 1.15;
+    }
+    .oval-arrow {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .oval-btn:hover .oval-arrow {
+      background: rgba(255,255,255,0.28);
+      transform: translateX(3px);
+    }
+
+    .back-link {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.5);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+      animation: rise 0.9s 0.3s ease both;
+      position: relative;
+    }
+    .back-link:hover { color: #fff; border-color: rgba(255,255,255,0.9); }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ═══ CHAPTER PAGE ═══ */
+    #chapter {
+      display: none;
+      position: fixed; inset: 0; z-index: 50;
+      flex-direction: column;
+      background: #08244e;
+    }
+    #chapter.open { display: flex; }
+
+    /* Chapter header bar */
+    .ch-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.4rem;
+      background: rgba(0,0,0,0.35);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    .ch-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+      font-style: italic;
+      color: #a0d0f0;
+      font-weight: 400;
+    }
+    .ch-close {
+      background: none; border: none;
+      color: rgba(255,255,255,0.5);
+      font-size: 1.3rem; cursor: pointer;
+      transition: color 0.2s, transform 0.2s;
+      line-height: 1;
+    }
+    .ch-close:hover { color: #fff; transform: rotate(90deg); }
+
+    /* Two-column grid body */
+    .ch-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Centre spine */
+    .ch-body::after {
+      content: '';
+      position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 2px; height: 100%;
+      background: rgba(255,255,255,0.07);
+      pointer-events: none; z-index: 2;
+    }
+
+    /* Each column scrolls independently */
+    .ch-col {
+      overflow-y: auto;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .ch-col::-webkit-scrollbar { width: 4px; }
+    .ch-col::-webkit-scrollbar-track { background: transparent; }
+    .ch-col::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+    /* Each cell — sized for a small image */
+    .ch-cell {
+      flex: 0 0 auto;
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .ch-cell:hover { background: rgba(255,255,255,0.06); }
+
+    /* Image inside cell fills it */
+    .ch-cell img {
+      width: 100%; height: 100%;
+      object-fit: contain; display: block; background: #000;
+    }
+
+
+    /* Number badge */
+    .ch-num {
+      position: absolute;
+      top: 0.6rem; left: 0.7rem;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.8);
+      z-index: 2;
+      pointer-events: none;
+      background: rgba(0,0,0,0.45);
+      padding: 0.2rem 0.45rem;
+      border-radius: 20px;
+    }
+
+    /* Empty cell placeholder */
+    .ch-cell.empty .ch-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    .ch-cell.empty .ch-placeholder svg { opacity: 0.6; }
+    .ch-cell.empty .ch-placeholder span {
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ LANDING ═══ -->
+<div id="landing">
+  <div class="header">
+    <span class="eyebrow">A little something for you ✦</span>
+    <h1>Your Next<br/><em>Surprise Awaits</em></h1>
+    <h2>Keep scrolling each chapter to discover more!</h2>
+  </div>
+
+  <div class="ovals">
+    <a class="oval-btn oval-1" href="#" onclick="openChapter(event,1)">
+      <div class="oval-text">
+        <span class="oval-label">Chapter One</span>
+        <span class="oval-title">20 Things I Love About You</span>
+      </div>
+      <div class="oval-arrow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </a>
+
+    <a class="oval-btn oval-2" href="#" onclick="openChapter(event,2)">
+      <div class="oval-text">
+        <span class="oval-label">Chapter Two</span>
+        <span class="oval-title">20 Things That Remind Me of You</span>
+      </div>
+      <div class="oval-arrow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </a>
+
+    <a class="oval-btn oval-3" href="#" onclick="openChapter(event,3)">
+      <div class="oval-text">
+        <span class="oval-label">Chapter Three</span>
+        <span class="oval-title">20 Song Lyrics About You</span>
+      </div>
+      <div class="oval-arrow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </a>
+  </div>
+
+  <a class="back-link" href="lizzz.html">← Go back</a>
+</div>
+
+<!-- ═══ CHAPTER PAGE ═══ -->
+<div id="chapter">
+  <div class="ch-header">
+    <span class="ch-title" id="chTitle">Chapter One</span>
+    <button class="ch-close" onclick="closeChapter()">&#x2715;</button>
+  </div>
+
+  <div class="ch-body">
+    <!-- Left column: items 1–10 -->
+    <div class="ch-col" id="colLeft"></div>
+    <!-- Right column: items 11–20 -->
+    <div class="ch-col" id="colRight"></div>
+  </div>
+</div>
+
+<script>
+  // ── Chapter content ──
+  // Each item: { text, img (optional filename) }
+  // To add an image: set img: 'your-file.jpg'  (file must be in same folder)
+
+  var chapters = {
+    1: {
+      title: 'Chapter One · 20 Things I Love About You',
+      items: [
+        {img: 'm1.png'},
+        {img: 'm2.png'},
+        {img: 'm3.png'},
+        {img: 'm4.png'},
+        {img: 'm5.png'},
+        {img: 'm6.png'},
+        {img: 'm7.png'},
+        {img: 'm8.png'},
+        {img: 'm9.png'},
+        {img: 'm10.png'},
+        {img: 'm11.png'},
+        {img: 'm12.png'},
+        {img: 'm13.png'},
+        {img: 'm14.png'},
+        {img: 'm15.png'},
+        {img: 'm16.png'},
+        {img: 'm17.png'},
+        {img: 'm18.png'},
+        {img: 'm19.png'},
+        {img: 'm20.png'}
+      ]
+    },
+    2: {
+      title: 'Chapter Two · 20 Things That Remind Me of You',
+      items: [
+        {img: 'l1.jpg'},
+        {img: 'l2.jpg'},
+        {img: 'l3.jpg'},
+        {img: 'l4.jpg'},
+        {img: 'l5.jpg'},
+        {img: 'l6.jpg'},
+        {img: 'l7.jpg'},
+        {img: 'l8.jpg'},
+        {img: 'l9.jpg'},
+        {img: 'l10.jpg'},
+        {img: 'l11.jpg'},
+        {img: 'l12.jpg'},
+        {img: 'l13.jpg'},
+        {img: 'l14.jpg'},
+        {img: 'l15.jpg'},
+        {img: 'l16.jpg'},
+        {img: 'l17.jpg'},
+        {img: 'l18.jpg'},
+        {img: 'l19.jpg'},
+        {img: 'l20.jpg'}
+      ]
+    },
+    3: {
+      title: 'Chapter Three · 20 Song Lyrics About You',
+      items: [
+        {img: 'p1.png'},
+        {img: 'p2.png'},
+        {img: 'p3.png'},
+        {img: 'p4.png'},
+        {img: 'p5.png'},
+        {img: 'p6.png'},
+        {img: 'p7.png'},
+        {img: 'p8.png'},
+        {img: 'p9.png'},
+        {img: 'p10.png'},
+        {img: 'p11.png'},
+        {img: 'p12.png'},
+        {img: 'p13.png'},
+        {img: 'p14.png'},
+        {img: 'p15.png'},
+        {img: 'p16.png'},
+        {img: 'p17.png'},
+        {img: 'p18.png'},
+        {img: 'p19.png'},
+        {img: 'p20.png'}
+      ]
+    }
+  };
+
+  function openChapter(e, num) {
+    e.preventDefault();
+    var ch = chapters[num];
+    document.getElementById('chTitle').textContent = ch.title;
+
+    var left  = document.getElementById('colLeft');
+    var right = document.getElementById('colRight');
+    left.innerHTML = '';
+    right.innerHTML = '';
+
+    ch.items.forEach(function(item, i) {
+      var cell = document.createElement('div');
+      cell.className = 'ch-cell' + (item.img ? '' : ' empty');
+
+      // Number badge
+      var num_el = document.createElement('div');
+      num_el.className = 'ch-num';
+      num_el.textContent = String(i + 1).padStart(2, '0');
+      cell.appendChild(num_el);
+
+      if (item.img) {
+        var img = document.createElement('img');
+        img.src = item.img;
+        img.alt = '';
+        cell.appendChild(img);
+      } else {
+        // Placeholder icon
+        var ph = document.createElement('div');
+        ph.className = 'ch-placeholder';
+        ph.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="white" stroke-width="1.2"/><circle cx="8.5" cy="8.5" r="1.5" fill="white"/><path d="M21 15l-5-5L5 21" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg><span>Add image</span>';
+        cell.appendChild(ph);
+      }
+
+
+      if (i < 10) {
+        left.appendChild(cell);
+      } else {
+        right.appendChild(cell);
+      }
+    });
+
+    document.getElementById('chapter').classList.add('open');
+  }
+
+  function closeChapter() {
+    document.getElementById('chapter').classList.remove('open');
+  }
+</script>
+</body>
+</html>
